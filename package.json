@@ -1,0 +1,8 @@
+{
+  "name": "ccbpatrimonio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/AlefeChorna/ccbpatrimonio.git",
+  "author": "Aléfe Chorna <alefechorna99@gmail.com>",
+  "license": "MIT"
+}
