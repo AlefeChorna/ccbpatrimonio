@@ -70,7 +70,8 @@ const Main = () => (
         <TextInput
             placeholder="Informe seu usuário"
             autoCapitalize="none"
-            returnKeyType="next" 
+            returnKeyType="next"
+            maxLength={40} 
             blurOnSubmit={false}
             onSubmitEditing={() => this.password.focus()}
             style={styles.input} />
@@ -78,7 +79,8 @@ const Main = () => (
         <TextInput
             ref={input => this.password = input}
             autoCapitalize="none"
-            returnKeyType="go" 
+            returnKeyType="go"
+            maxLength={40}
             placeholder="Informe sua senha"
             secureTextEntry
             style={styles.input} />
