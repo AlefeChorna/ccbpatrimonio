@@ -1,7 +1,11 @@
 import React from 'react';
 
-import Routes from './routes';
+import createNavigator from './routes';
 
-const App = () => <Routes />;
+const App = () => {
+    const Routes = createNavigator();
+
+    return <Routes />;
+};
 
 export default App;
