@@ -14,7 +14,7 @@ const GradientButton = ({
   <LinearGradient { ...gradientProps }>
     <TouchableOpacity
       { ...buttonProps }
-      style={{ marginTop: 0, backgroundColor: "transparent" }}
+      style={{ ...buttonProps.style, marginTop: 0, backgroundColor: "transparent" }}
     >
       { React.isValidElement(contentButton)
         ? contentButton
