@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors, metrics } from '../../styles';
 
 const styles = StyleSheet.create({
   container: {
@@ -6,25 +7,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logo: {
+  containerLogo: {
     width: 125,
     height: 125,
     borderRadius: 75,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EEE',
+    backgroundColor: colors.lighter,
     marginBottom: 15,
+  },
+  logo: {
+    width: 121,
+    height: 121
   },
   input: {
     width: 300,
     height: 45,
-    backgroundColor: '#EEE',
+    backgroundColor: colors.lighter,
     elevation: 1,
     borderRadius: 25,
     marginTop: 12,
-    fontSize: 16,
-    paddingHorizontal: 20,
-    borderColor: '#AAA',
+    fontSize: metrics.fontSizeInput,
+    paddingHorizontal: metrics.basePadding,
+    borderColor: colors.light4,
     borderWidth: 0.3
   },
   button: {
@@ -37,9 +42,9 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: metrics.fontSizeButton,
     fontFamily: 'Gill Sans',
-    color: '#ffffff',
+    color: colors.white,
     backgroundColor: 'transparent',
   },
 });

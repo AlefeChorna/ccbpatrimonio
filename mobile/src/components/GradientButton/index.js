@@ -1,19 +1,35 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 
 import LinearGradient from 'react-native-linear-gradient';
 
-const GradientButton = ({ styleButton, buttonProps, gradientProps, styleButtonText, textButton }) => (
-    <LinearGradient 
-        { ...gradientProps ? { ...gradientProps } : {} }
-        style={styleButton}>
-        <TouchableOpacity 
-            style={{ ...styleButton, marginTop: 0, backgroundColor: "transparent" }}
-            { ...buttonProps ? { ...buttonProps } : {} }>
-        
-            <Text style={styleButtonText}>{textButton}</Text>
-        </TouchableOpacity>
-    </LinearGradient>
+const GradientButton = ({
+  gradientProps,
+  buttonProps,
+  contentButton,
+  styleButtonText,
+  textButton
+}) => (
+  <LinearGradient { ...gradientProps }>
+    <TouchableOpacity
+      { ...buttonProps }
+      style={{ marginTop: 0, backgroundColor: "transparent" }}
+    >
+      { React.isValidElement(contentButton)
+        ? contentButton
+        : <Text style={styleButtonText}>{textButton}</Text>
+      }
+    </TouchableOpacity>
+  </LinearGradient>
 );
+
+GradientButton.propTypes = {
+  gradientProps: PropTypes.object.isRequired,
+  buttonProps: PropTypes.object.isRequired,
+  contentButton: PropTypes.object,
+  styleButtonText: PropTypes.object,
+  textButton: PropTypes.string
+}
 
 export default GradientButton;
