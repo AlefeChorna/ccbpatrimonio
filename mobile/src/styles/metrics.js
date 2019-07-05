@@ -10,5 +10,6 @@ export default {
   screenHeight: width < height ? height : width,
 
   fontSizeInput: 16,
+  fontSizeText: 17,
   fontSizeButton: 17,
 };

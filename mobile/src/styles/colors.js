@@ -16,7 +16,9 @@ export default {
   success: '#9DCA83',
   danger: '#E37A7A',
 
+  themeColor: "#7159C1",
+
   transparent: 'transparent',
-  darkTransparent: 'rgba(0, 0, 0, 0.6)',
+  darkTransparent: 'rgba(0, 0, 0, 0.2)',
   whiteTransparent: 'rgba(255, 255, 255, 0.3)',
 };
