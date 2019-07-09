@@ -38,7 +38,12 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 35,
     elevation: 5,
-  }
+  },
+  tabBarLabel: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 2
+  },
 });
 
 export default styles;

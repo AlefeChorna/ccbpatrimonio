@@ -45,7 +45,12 @@ class Main extends Component {
 }
 
 Main.navigationOptions = {
-  tabBarIcon: ({ tintColor }) => <Icon name="format-list-checks" color={tintColor} size={31} />
+  tabBarIcon: ({ tintColor }) => <Icon name="format-list-checks" color={tintColor} size={31} />,
+  tabBarLabel: ({ tintColor }) => (
+    <View style={styles.tabBarLabel}>
+      <Text style={{ color: tintColor, fontSize: 12 }}>Verificações</Text>
+    </View>
+  )
 }
 
 export default Main;

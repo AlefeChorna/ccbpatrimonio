@@ -5,6 +5,7 @@ import {
   createBottomTabNavigator
 } from 'react-navigation';
 
+import FireExtinguisher from './pages/FireExtinguisher';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import Products from './pages/Products';
@@ -18,11 +19,12 @@ const MainRoute = () => createStackNavigator(
   {
     User: createBottomTabNavigator({
       Main,
-      Products
+      Products,
+      FireExtinguisher
     }, {
       tabBarOptions: {
         showIcon: true,
-        showLabel: false,
+        showLabel: true,
         activeTintColor: colors.themeColor,
         inactiveTintColor: colors.darkTransparent,
         style: {
@@ -34,7 +36,7 @@ const MainRoute = () => createStackNavigator(
     AddVerification,
   }, {
     initialRouteName: 'User',
-    transitionConfig: () => fromLeft(600),
+    transitionConfig: () => fromLeft(),
     headerMode: 'none'
   }
 );
