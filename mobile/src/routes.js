@@ -1,23 +1,23 @@
 import {
   createAppContainer,
   createSwitchNavigator,
+  createStackNavigator,
   createBottomTabNavigator
 } from 'react-navigation';
 
 import Login from './pages/Login';
 import Main from './pages/Main';
 import Products from './pages/Products';
-import Verifications from './pages/Verifications';
+import AddVerification from './pages/AddVerification';
 
+import { fromLeft } from './helpers/transitions';
 
 import { colors } from './styles';
 
-const Routes = (userLogged = false) => createAppContainer(createSwitchNavigator(
+const MainRoute = () => createStackNavigator(
   {
-    Login,
     User: createBottomTabNavigator({
       Main,
-      Verifications,
       Products
     }, {
       tabBarOptions: {
@@ -31,8 +31,20 @@ const Routes = (userLogged = false) => createAppContainer(createSwitchNavigator(
         }
       }
     }),
+    AddVerification,
   }, {
-    initialRouteName: 'Login',
+    initialRouteName: 'User',
+    transitionConfig: () => fromLeft(600),
+    headerMode: 'none'
+  }
+);
+
+const Routes = (userLogged = false) => createAppContainer(createSwitchNavigator(
+  {
+    Login,
+    Main: MainRoute(),
+  }, {
+    initialRouteName: 'Main',
   }
 ));
 

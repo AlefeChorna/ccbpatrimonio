@@ -35,7 +35,7 @@ class Main extends Component {
         { data.length > 0 ? this._renderContent() : this._renderContentNoItems() }
 
         <View style={styles.containerButtonAdd}>
-          <TouchableOpacity style={styles.buttonAdd}>
+          <TouchableOpacity style={styles.buttonAdd} onPress={() => this.props.navigation.navigate('AddVerification')}>
             <Icon name="plus" size={22} color="#FFF" />
           </TouchableOpacity>
         </View>
