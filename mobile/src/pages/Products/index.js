@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Header from '../../components/Header';
@@ -7,10 +7,32 @@ import Header from '../../components/Header';
 import styles from './styles';
 
 class Products extends Component {
+  state={
+    data: []
+  }
+
+  _renderContentNoItems = () => (
+    <View style={styles.containerNoItems}>
+      <Image
+        source={require('../../assets/products.png')}
+        style={styles.imageNoItems}
+        resizeMode="contain" />
+      <Text style={styles.textNoItems}>Nenhum ativo listado</Text>
+    </View>
+  )
+
+  _renderContent = () => (
+    <View></View>
+  )
+
   render() {
+    const { data } = this.state;
+
     return (
-      <View>
+      <View style={styles.container}>
         <Header title="Ativos Imobilizado" showIconSearch />
+
+        { data.length > 0 ? this._renderContent() : this._renderContentNoItems() }
       </View>
     );
   }

@@ -5,11 +5,12 @@ import {
   createBottomTabNavigator
 } from 'react-navigation';
 
+import AddFireExtinguisher from './pages/AddFireExtinguisher';
+import AddVerification from './pages/AddVerification';
 import FireExtinguisher from './pages/FireExtinguisher';
 import Login from './pages/Login';
 import Main from './pages/Main';
 import Products from './pages/Products';
-import AddVerification from './pages/AddVerification';
 
 import { fromLeft } from './helpers/transitions';
 
@@ -34,6 +35,7 @@ const MainRoute = () => createStackNavigator(
       }
     }),
     AddVerification,
+    AddFireExtinguisher
   }, {
     initialRouteName: 'User',
     transitionConfig: () => fromLeft(),
