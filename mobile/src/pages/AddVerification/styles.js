@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../../styles';
+import { colors, metrics } from '../../styles';
+
 const barCodeReaderHeight = 350;
 
 const styles = StyleSheet.create({
@@ -13,6 +14,21 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     color: colors.themeColor
+  },
+  containerNoItems: {
+    height: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageNoItems: {
+    width: 75,
+    height: 75,
+    opacity: 0.65
+  },
+  textNoItems: {
+    color: colors.regular,
+    marginTop: metrics.baseMargin + 5,
+    fontSize: metrics.fontSizeText - 2,
   },
   containerBarCode: {
     flex: 1,

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
   PermissionsAndroid,
   ActivityIndicator,
+  Animated,
   BackHandler,
   InteractionManager
 } from 'react-native';
@@ -16,11 +18,18 @@ import Header from '../../components/Header';
 import styles from './styles';
 
 export default class AddVerification extends Component {
+  constructor(props) {
+    super(props);
+
+    this.barCodeReaderHeightAnimated = new Animated.Value(styles.viewBarCode.height);
+  }
+
   state = {
+    data: [],
     torchMode: 'off',
     cameraType: 'back',
     content: '',
-    expand: false,
+    expandedBarCode: true,
     loading: true,
   }
 
@@ -77,28 +86,56 @@ export default class AddVerification extends Component {
     );
   }
 
+  _renderContentNoItems = () => (
+    <View style={styles.containerNoItems}>
+      <Image
+        source={require('../../assets/no-items-added.png')}
+        style={styles.imageNoItems}
+        resizeMode="contain" />
+      <Text style={styles.textNoItems}>Nenhum ativo adicionado</Text>
+    </View>
+  );
+
+  _renderContentItems = () => (
+    <View style={styles.viewContent}>
+      <Text>{this.state.content}</Text>
+    </View>
+  )
+
+  _toogleBarCodeScanner = () => {
+    const { expandedBarCode } = this.state;
+
+    Animated.timing(this.barCodeReaderHeightAnimated, {
+      toValue: expandedBarCode ? 0 : styles.viewBarCode.height,
+      duration: 450
+    }).start(() => {
+      InteractionManager.runAfterInteractions(() => {
+        this.setState({ expandedBarCode: !expandedBarCode });
+      });
+    });
+  }
+
   _renderContent = () => {
-    const { expand } = this.state;
+    const { expandedBarCode, data } = this.state;
 
     return (
       <>
-        {!expand &&
-          <View style={styles.viewBarCode}>
-            <BarcodeScanner
-              onBarCodeRead={this.barcodeReceived}
-              showViewFinder={false}
-              style={styles.barcodeScanner}
-              children={this.maskLoaderBarCode()}
-              torchMode={this.state.torchMode}
-              cameraType={this.state.cameraType} />
-          </View>
+        <Animated.View style={{ height: this.barCodeReaderHeightAnimated }}>
+          <BarcodeScanner
+            onBarCodeRead={this.barcodeReceived}
+            showViewFinder={false}
+            style={styles.barcodeScanner}
+            children={this.maskLoaderBarCode()}
+            torchMode={this.state.torchMode}
+            cameraType={this.state.cameraType} />
+        </Animated.View>
+        { (data.length === 0)
+          ? this._renderContentNoItems()
+          : this._renderContentItems()
         }
-        <View style={styles.viewContent}>
-          <Text>{this.state.content}</Text>
-        </View>
         <View style={styles.containerButtonAdd}>
-          <TouchableOpacity style={styles.buttonAdd} onPress={() => this.setState({ expand: !expand })}>
-            <Icon name={expand ? "arrow-down" : "arrow-up"} size={22} color="#FFF" />
+          <TouchableOpacity style={styles.buttonAdd} onPress={() => this._toogleBarCodeScanner()}>
+            <Icon name={expandedBarCode ? "arrow-up" :  "arrow-down"} size={22} color="#FFF" />
           </TouchableOpacity>
         </View>
       </>
@@ -112,12 +149,16 @@ export default class AddVerification extends Component {
   );
 
   _backHandlerEvent = () => {
-    const { expand } = this.state;
+    const { expandedBarCode } = this.state;
 
-    if (!expand) {
-      InteractionManager.runAfterInteractions(() => {
-        return false;
-      });
+    if (expandedBarCode) {
+      /**
+       * Desativa a câmera do celular para que a transição de volta
+       * para a tabBar do App seja suave
+       */
+      this.setState({ loading: true });
+
+      return false;
     } else {
       return false;
     }
