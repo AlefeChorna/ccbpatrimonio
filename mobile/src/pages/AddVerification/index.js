@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Vibration,
   Text,
   Image,
   TouchableOpacity,
@@ -12,8 +13,13 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BarcodeScanner from 'react-native-scan-barcode';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
+import Torch from 'react-native-torch';
 
+import { SCLAlert, SCLAlertButton } from '../../components/SweetAlert';
 import Header from '../../components/Header';
+
+import { metrics } from '../../styles';
 
 import styles from './styles';
 
@@ -26,26 +32,78 @@ export default class AddVerification extends Component {
 
   state = {
     data: [],
+    showMessageInfo: false,
     torchMode: 'off',
+    scannerColor: 'white',
     cameraType: 'back',
-    content: '',
+    scannerContent: '',
     expandedBarCode: true,
+    enableNextScanner: true,
     loading: true,
   }
 
-  barcodeReceived = (e) => {
-    this.setState({ content: e.data });
+  barcodeReceived = async (e) => {
+    const { enableNextScanner } = this.state;
 
-    console.log('Barcode: ' + e.data);
-    console.log('Type: ' + e.type);
+    if (!enableNextScanner) return;
+
+    await this.setState({
+      enableNextScanner: false,
+      scannerContent: e.data,
+      scannerColor: '#9DCA83',
+    });
+
+    this._addItemToVerification();
   }
 
-  async componentDidMount() {
-    const rp = await
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+  _codeHasAlreadyInserted = () => {
+    const { data, scannerContent } = this.state;
+
+    let found = false;
+    data.every(code => {
+      if (code === scannerContent) found = true;
+
+      return !found;
+    });
+
+    return found;
+  }
+
+  _toogleMessageInfo = () => {
+    const { showMessageInfo } = this.state;
+
+    this.setState({ showMessageInfo: !showMessageInfo });
+  }
+
+  _enableScanner = () => {
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        this.setState({
+          enableNextScanner: true,
+          scannerColor: 'white'
+        });
+      }, 1500);
+    });
+  }
+
+  _addItemToVerification = async () => {
+    const { data, scannerContent } = this.state;
+
+    const PATTERN = [50, 200, 50, 200];
+    Vibration.vibrate(PATTERN);
+
+    if (this._codeHasAlreadyInserted()) {
+      this._toogleMessageInfo();
+    } else {
+      await this.setState({ data: [ scannerContent, ...data] });
+    }
+
+    this._enableScanner();
   }
 
   maskLoaderBarCode() {
+    const { scannerColor } = this.state;
+
     return (
       <View style={styles.containerBarCode}>
         <View style={styles.subContainerBarCode} />
@@ -54,29 +112,29 @@ export default class AddVerification extends Component {
           { /* Desenho do leitor de código de barras Top */ }
           <View style={styles.containerReader}>
             <View style={{ marginLeft: 20, justifyContent: 'flex-end' }}>
-              <View style={{ width: 35, height: 6, backgroundColor: 'white', }} />
-              <View style={{ width: 6, height: 38, backgroundColor: 'white', }} />
+              <View style={{ width: 35, height: 6, backgroundColor: scannerColor, }} />
+              <View style={{ width: 6, height: 38, backgroundColor: scannerColor, }} />
             </View>
             <View style={{ flex: 1 }} />
             <View style={{ marginRight: 20, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-              <View style={{ width: 35, height: 6, backgroundColor: 'white', }} />
-              <View style={{ width: 6, height: 38, backgroundColor: 'white', }} />
+              <View style={{ width: 35, height: 6, backgroundColor: scannerColor, }} />
+              <View style={{ width: 6, height: 38, backgroundColor: scannerColor, }} />
             </View>
           </View>
           { /* Desenho do leitor de código de barras Center */ }
           <View style={styles.containerReaderCenter}>
-            <View style={{ width: 275, height: 3, backgroundColor: 'white' }} />
+            <View style={{ width: 275, height: 3, backgroundColor: scannerColor }} />
           </View>
           { /* Desenho do leitor de código de barras Bottom */ }
           <View style={styles.containerReader}>
             <View style={{ marginLeft: 20 }}>
-              <View style={{ width: 6, height: 38, backgroundColor: 'white', }} />
-              <View style={{ width: 35, height: 6, backgroundColor: 'white', }} />
+              <View style={{ width: 6, height: 38, backgroundColor: scannerColor, }} />
+              <View style={{ width: 35, height: 6, backgroundColor: scannerColor, }} />
             </View>
             <View style={{ flex: 1 }} />
             <View style={{ marginRight: 20, alignItems: 'flex-end' }}>
-              <View style={{ width: 6, height: 38, backgroundColor: 'white', }} />
-              <View style={{ width: 35, height: 6, backgroundColor: 'white', }} />
+              <View style={{ width: 6, height: 38, backgroundColor: scannerColor, }} />
+              <View style={{ width: 35, height: 6, backgroundColor: scannerColor, }} />
             </View>
           </View>
 
@@ -98,7 +156,7 @@ export default class AddVerification extends Component {
 
   _renderContentItems = () => (
     <View style={styles.viewContent}>
-      <Text>{this.state.content}</Text>
+      <Text>{this.state.scannerContent}</Text>
     </View>
   )
 
@@ -142,11 +200,25 @@ export default class AddVerification extends Component {
     );
   }
 
-  _renderLoading = () => (
-    <View style={styles.containerLoading}>
-      <ActivityIndicator color={styles.activityIndicator.color} size={38} />
-    </View>
-  );
+  _renderLoading = () => {
+    const { loading } = this.state;
+    const heightShimmer = Math.floor(metrics.screenHeight / 9);
+    const width = metrics.screenWidth;
+
+    return (
+      <>
+          <ShimmerPlaceHolder duration={1100} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={1000} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={950} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={1000} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={1200} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={1050} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={950} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={1200} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+          <ShimmerPlaceHolder duration={1050} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
+      </>
+    );
+  }
 
   _backHandlerEvent = () => {
     const { expandedBarCode } = this.state;
@@ -168,26 +240,47 @@ export default class AddVerification extends Component {
     if(this.backHandler) this.backHandler.remove();
   }
 
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        this._backHandlerEvent
-      );
-      setTimeout(() => this.setState({ loading: false }), 500);
-    });
+  async componentDidMount() {
+    const rp = await
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+
+    //Torch.switchState(true);
+
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this._backHandlerEvent
+    );
+
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, 2000);
   }
 
   render() {
-    const { loading } = this.state;
+    const {
+      loading,
+      showMessageInfo,
+      scannerContent
+    } = this.state;
 
     return (
       <View style={styles.container}>
         <Header title="Adicionar Verificação" showIconSearch showIconClose />
+
         {loading
           ? this._renderLoading()
           : this._renderContent()
         }
+
+        <SCLAlert
+          theme="info"
+          show={showMessageInfo}
+          title="Atenção"
+          onRequestClose={() => {}}
+          subtitle={`Código ${scannerContent} já inserido`}
+        >
+          <SCLAlertButton theme="info" onPress={this._toogleMessageInfo}>OK</SCLAlertButton>
+        </SCLAlert>
       </View>
     );
   }

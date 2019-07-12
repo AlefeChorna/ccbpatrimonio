@@ -8,10 +8,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  containerLoading: {
-    height: 70,
-    justifyContent: 'center'
-  },
   activityIndicator: {
     color: colors.themeColor
   },

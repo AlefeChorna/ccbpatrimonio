@@ -117,6 +117,9 @@ android {
         }
     }
     buildTypes {
+        customDebugType {
+          debuggable true
+        }
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -138,6 +141,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-torch')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-scan-barcode')
