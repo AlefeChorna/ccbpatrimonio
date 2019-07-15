@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Image, findNodeHandle } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Image,
+  findNodeHandle
+} from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { TextField } from 'react-native-material-textfield';
 import PhotoUpload from 'react-native-photo-upload';
@@ -10,13 +15,23 @@ import { formatDate } from '../../helpers/format';
 
 import styles from './styles';
 
-let data = [{
-  value: 'Alvorada',
-}, {
-  value: 'Santa Terezinha',
-}, {
-  value: 'Três de Maio',
-}];
+let data = [
+  {
+    value: 'Alvorada',
+  }, {
+    value: 'Marmeleiro',
+  }, {
+    value: 'Santa Terezinha',
+  }, {
+    value: 'Da luz',
+  }, {
+    value: 'São Francisco Xavier',
+  },{
+    value: 'Paranhos',
+  }, {
+    value: 'Três de Maio',
+  }
+];
 
 export default class AddFireExtinguisher extends Component {
   state={
@@ -48,6 +63,31 @@ export default class AddFireExtinguisher extends Component {
     }, 250);
   }
 
+  _goBack = () => {
+    const { navigation } = this.props;
+
+    navigation.navigate('FireExtinguisher')
+  }
+
+  _handlerSaveFireExtinguisher = () => {
+    const {
+      extinguisherName,
+      dueDate,
+    } = this.state;
+
+    if (!extinguisherName) {
+      this.setState({ extinguisherError: 'Campo obrigatório' });
+      return;
+    }
+
+    if (!dueDate) {
+      this.setState({ dueDateError: 'Campo obrigatório' });
+      return;
+    }
+
+    this._goBack();
+  }
+
   render() {
     const {
       dropdownLabelChurch,
@@ -60,13 +100,20 @@ export default class AddFireExtinguisher extends Component {
 
     return (
       <View style={styles.container}>
-        <Header title="Adicionar Extintor" showIconClose />
+        <Header
+          title="Adicionar Extintor"
+          showIconClose
+          showIconSave
+          onClose={() => this._goBack()}
+          onSave={() => this._handlerSaveFireExtinguisher()} />
+
         <ScrollView
           ref="scrool"
           extraScrollHeight={25}
           style={styles.content}
         >
           <PhotoUpload
+            quality={100}
             imagePickerProps={{
               title: 'Selecione uma opção',
               takePhotoButtonTitle: 'Tirar uma foto',
@@ -117,7 +164,9 @@ export default class AddFireExtinguisher extends Component {
               this._scrollToInput(findNodeHandle(event.target), 105)
             }}
             onSubmitEditing={() => this.dueDate.focus()}
-            onChangeText={text => this.setState({ extinguisherName: text })} />
+            onChangeText={text => {
+              this.setState({ extinguisherName: text, extinguisherError: '' })
+            }} />
 
           <TextField
             ref={input => this.dueDate = input}
@@ -131,7 +180,9 @@ export default class AddFireExtinguisher extends Component {
             onFocus={event => {
               this._scrollToInput(findNodeHandle (event.target));
             }}
-            onChangeText={text => this.setState({ dueDate: formatDate(text) })} />
+            onChangeText={text =>{
+              this.setState({ dueDate: formatDate(text), dueDateError: '' })
+            }} />
         </ScrollView>
       </View>
     );

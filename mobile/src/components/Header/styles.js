@@ -28,6 +28,35 @@ const styles = StyleSheet.create({
   },
   iconBack: {
     width: 60,
+  },
+  containerSearch: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  searchContainerMarginLeft: {
+    marginLeft: metrics.screenWidth
+  },
+  inputSearch: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    width: metrics.screenWidth - 70,
+    paddingHorizontal: metrics.basePadding / 2,
+    color: 'white',
+    backgroundColor: colors.whiteTransparent,
+    borderRadius: metrics.baseRadius + 3,
+    height: 35,
+  },
+  selectionColor: {
+    color: colors.themeColor
+  },
+  buttonDelete: {
+    height: 50,
+    width: 40,
+    position: 'absolute',
+    right: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 

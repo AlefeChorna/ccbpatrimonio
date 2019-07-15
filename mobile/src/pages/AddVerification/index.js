@@ -6,20 +6,19 @@ import {
   Image,
   TouchableOpacity,
   PermissionsAndroid,
-  ActivityIndicator,
   Animated,
   BackHandler,
   InteractionManager
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import BarcodeScanner from 'react-native-scan-barcode';
-import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import Torch from 'react-native-torch';
+import { WaveIndicator } from 'react-native-indicators';
 
 import { SCLAlert, SCLAlertButton } from '../../components/SweetAlert';
 import Header from '../../components/Header';
 
-import { metrics } from '../../styles';
+import { colors } from '../../styles';
 
 import styles from './styles';
 
@@ -200,25 +199,7 @@ export default class AddVerification extends Component {
     );
   }
 
-  _renderLoading = () => {
-    const { loading } = this.state;
-    const heightShimmer = Math.floor(metrics.screenHeight / 9);
-    const width = metrics.screenWidth;
-
-    return (
-      <>
-          <ShimmerPlaceHolder duration={1100} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={1000} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={950} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={1000} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={1200} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={1050} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={950} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={1200} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-          <ShimmerPlaceHolder duration={1050} width={width} height={heightShimmer} autoRun={true} visible={!loading} />
-      </>
-    );
-  }
+  _renderLoading = () => <WaveIndicator color={colors.themeColor} size={75} />
 
   _backHandlerEvent = () => {
     const { expandedBarCode } = this.state;
@@ -253,7 +234,7 @@ export default class AddVerification extends Component {
 
     setTimeout(() => {
       this.setState({ loading: false });
-    }, 2000);
+    }, 2400);
   }
 
   render() {
@@ -265,7 +246,12 @@ export default class AddVerification extends Component {
 
     return (
       <View style={styles.container}>
-        <Header title="Adicionar Verificação" showIconSearch showIconClose />
+        <Header
+          title="Adicionar Verificação"
+          showIconSearch
+          animatedSearch={false}
+          showIconClose
+          onClose={() => this.props.navigation.navigate('Main')}/>
 
         {loading
           ? this._renderLoading()
