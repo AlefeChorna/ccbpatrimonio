@@ -24,7 +24,7 @@ class Header extends PureComponent {
   state={
     showContainerSearch: false,
     searchText: '',
-    showbuttonDelete: false
+    showButtonDelete: false
   }
 
   _toogleAnimetedSearch = async () => {
@@ -50,7 +50,7 @@ class Header extends PureComponent {
       }).start(() => {
         this.setState({
           showContainerSearch: false,
-          showbuttonDelete: false,
+          showButtonDelete: false,
           searchText: '',
         });
       });
@@ -66,10 +66,21 @@ class Header extends PureComponent {
     } else {
       this.setState({
         showContainerSearch: !showContainerSearch,
-        showbuttonDelete: false,
+        showButtonDelete: false,
         searchText: '',
       })
     }
+  }
+
+  _onChangeText = _prText => {
+    const { onChangeText } = this.props;
+
+    this.setState({
+      searchText: _prText,
+      showButtonDelete: _prText.length > 0
+    });
+
+    onChangeText && onChangeText(_prText);
   }
 
   componentDidMount() {
@@ -90,7 +101,7 @@ class Header extends PureComponent {
     const {
       showContainerSearch,
       searchText,
-      showbuttonDelete
+      showButtonDelete
     } = this.state;
 
     const {
@@ -104,6 +115,7 @@ class Header extends PureComponent {
       animatedSearch,
       containerButtonSave,
       onSave,
+      onChangeText,
     } = this.props;
 
     const Search = animatedSearch ? Animated.View : View;
@@ -124,16 +136,17 @@ class Header extends PureComponent {
               <Text style={styles.title}>{title}</Text>
             </View>
 
-            {showIconSearch &&
-              <TouchableOpacity
-                style={[
-                  styles.containerButton,
-                  containerButtonSearch,
-                ]}
-                onPress={() => this._toogleSearch()}
-              >
-                <Icon name="magnify" color="#FFF" size={26} />
-              </TouchableOpacity>
+            {showIconSearch
+              ? <TouchableOpacity
+                  style={[
+                    styles.containerButton,
+                    containerButtonSearch,
+                  ]}
+                  onPress={() => this._toogleSearch()}
+                >
+                  <Icon name="magnify" color="#FFF" size={26} />
+                </TouchableOpacity>
+              : <Icon style={styles.containerButton} name="magnify" color="transparent" />
             }
 
             {showIconSave &&
@@ -168,23 +181,19 @@ class Header extends PureComponent {
 
               <TextInput
                 style={styles.inputSearch}
+                autoFocus
                 placeholder="Digite algo para pesquisar..."
                 placeholderTextColor="rgba(245, 245, 245, 0.3)"
                 selectionColor='rgba(250, 250, 250, 0.7)'
                 value={searchText}
-                onChangeText={text => {
-                  this.setState({
-                    searchText: text,
-                    showbuttonDelete: text.length > 0
-                  });
-                }} />
+                onChangeText={text => this._onChangeText(text)} />
 
-              {showbuttonDelete &&
+              {showButtonDelete &&
                 <TouchableOpacity
                   onPress={() => {
                     this.setState({
                       searchText: '',
-                      showbuttonDelete: false,
+                      showButtonDelete: false,
                     });
                   }}
                   style={styles.buttonDelete}
@@ -211,6 +220,7 @@ Header.propTypes = {
   showIconSave: PropTypes.bool,
   containerButtonSave: PropTypes.object,
   onSave: PropTypes.func,
+  onChangeText: PropTypes.func
 }
 
 Header.defaultProps = {

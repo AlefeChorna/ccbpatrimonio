@@ -35,7 +35,9 @@ let data = [
 
 export default class AddFireExtinguisher extends Component {
   state={
+    dropdownChurch: '',
     dropdownLabelChurch: 'Selecione uma igreja',
+    dropdownErrorChurch: '',
     extinguisherName: '',
     extinguisherError: '',
     dueDate: '',
@@ -43,11 +45,15 @@ export default class AddFireExtinguisher extends Component {
     extinguisherImage: '',
   }
 
-  _changeLabelDropdownChurch = () => {
+  _changeLabelDropdownChurch = _prChurch => {
     const { dropdownLabelChurch } = this.state;
 
     if (dropdownLabelChurch.indexOf('Selecione') !== -1) {
-      this.setState({ dropdownLabelChurch: 'Igreja' });
+      this.setState({
+        dropdownChurch: _prChurch,
+        dropdownLabelChurch: 'Igreja',
+        dropdownErrorChurch: ''
+      });
     }
   }
 
@@ -71,17 +77,25 @@ export default class AddFireExtinguisher extends Component {
 
   _handlerSaveFireExtinguisher = () => {
     const {
+      dropdownChurch,
       extinguisherName,
       dueDate,
     } = this.state;
 
+    if (!dropdownChurch) {
+      this.setState({ dropdownErrorChurch: 'Campo obrigatório' });
+      return;
+    }
+
     if (!extinguisherName) {
       this.setState({ extinguisherError: 'Campo obrigatório' });
+
       return;
     }
 
     if (!dueDate) {
       this.setState({ dueDateError: 'Campo obrigatório' });
+
       return;
     }
 
@@ -91,6 +105,7 @@ export default class AddFireExtinguisher extends Component {
   render() {
     const {
       dropdownLabelChurch,
+      dropdownErrorChurch,
       extinguisherName,
       extinguisherError,
       dueDate,
@@ -119,7 +134,7 @@ export default class AddFireExtinguisher extends Component {
               takePhotoButtonTitle: 'Tirar uma foto',
               chooseFromLibraryButtonTitle: "Abrir minha galeria",
               cancelButtonTitle: 'Cancelar',
-              allowsEditing: true,
+              allowsEditing: false,
               permissionDenied: {
                 title: 'Permissão',
                 text: 'Para poder tirar fotos com sua câmera e escolher imagens da sua biblioteca',
@@ -131,7 +146,6 @@ export default class AddFireExtinguisher extends Component {
             onPhotoSelect={avatar => {
               if (avatar) {
                 this.setState({ extinguisherImage: avatar });
-                console.log('Image base64 string: ', avatar)
               }
             }}
           >
@@ -147,7 +161,8 @@ export default class AddFireExtinguisher extends Component {
 
           <Dropdown
             label={dropdownLabelChurch}
-            onChangeText={label => this._changeLabelDropdownChurch()}
+            error={dropdownErrorChurch}
+            onChangeText={label => this._changeLabelDropdownChurch(label)}
             data={data} />
 
           <TextField

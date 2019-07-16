@@ -6,6 +6,7 @@ import {
 } from 'react-navigation';
 
 import AddFireExtinguisher from './pages/AddFireExtinguisher';
+import AddItemsVerification from './pages/AddItemsVerification';
 import AddVerification from './pages/AddVerification';
 import FireExtinguisher from './pages/FireExtinguisher';
 import Login from './pages/Login';
@@ -35,6 +36,7 @@ const MainRoute = () => createStackNavigator(
       }
     }),
     AddVerification,
+    AddItemsVerification,
     AddFireExtinguisher
   }, {
     initialRouteName: 'User',
